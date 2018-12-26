@@ -5,9 +5,12 @@ Resource          Futura.robot
 
 
 *** Test Cases ***
-Addition
-    Given calculator has been cleared
-    When user types "1 + 1"
-    and user pushes equals
-    Then result is "2"
+Fist test
+    Given modbus has been opened
+    When user reads the register 1
+    Then result is between 1.0 and 9.9
 
+advanced test
+    Given modbus has been opened
+    When user reads the register 1
+    Then outdoor temeprature is between 10 and 20
