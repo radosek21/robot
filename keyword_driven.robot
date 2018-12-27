@@ -12,12 +12,18 @@ Documentation     Example test cases using the keyword-driven testing approach.
 ...               to use to the _data-driven_ approach.
 Resource          Futura.robot
 
+*** Variables ***
+${modbusClient} =  192.168.23.77
 *** Test Cases ***
 
-Check version
-    modbus has been opened
-#    user reads the input register 2
-#    result is equal to 15
-    ${outdoor} =  outdoor temeprature
+Check heating pwm
+    modbus client ${modbusClient} has been opened
+    ${indoorTemp} =  indoor temeprature
     ${setpoint} =  setpoint
-    ${outdoor} is between ${setpoint-0.2} and ${setpoint+0.1}
+    ${expectedPwm} =  evaluate  (${setpoint}-${indoorTemp})*100/30
+    ${heatingPwm} =  heating pwm
+    ${heatingPwm} is between 0 and 100
+    ${heatingPwm} =  set variable if  ${heatingPwm}>100   100
+    ${heatingPwm} =  set variable if  ${heatingPwm}<0   0
+
+

@@ -4,8 +4,8 @@ Library       FuturaLibrary.py
 
 *** Keywords ***
 # Low level keywords
-modbus has been opened
-    open client
+modbus client ${client} has been opened
+    open client  ${client}
 
 user reads the register ${addr}
     ${value} =  read holding register  ${addr}
@@ -33,11 +33,31 @@ wait for ${time} seconds
 
 # High level keywords
 outdoor temeprature
-    ${outTemp} =  read holding register  12
-    log  ${outTemp}
-    Return From Keyword  ${outTemp}
+    ${outdoorTemp} =  read input named register  temp_ambient
+    log  ${outdoorTemp}
+    Return From Keyword  ${outdoorTemp}
+
+waste temeprature
+    ${wasteTemp} =  read input named register  temp_waste
+    log  ${wasteTemp}
+    Return From Keyword  ${wasteTemp}
+
+fresh temeprature
+    ${freshTemp} =  read input named register  temp_fresh
+    log  ${freshTemp}
+    Return From Keyword  ${freshTemp}
+
+indoor temeprature
+    ${indoorTemp} =  read input named register  temp_indoor
+    log  ${indoorTemp}
+    Return From Keyword  ${indoorTemp}
+
+heating pwm
+    ${heatingPwm} =  read holding named register  fut_heating_pwm
+    log  ${heatingPwm}
+    Return From Keyword  ${heatingPwm}
 
 setpoint
-    ${setpoint} =  read holding register  12
+    ${setpoint} =  read holding named register  cfg_temp_set
     log  ${setpoint}
     Return From Keyword  ${setpoint}

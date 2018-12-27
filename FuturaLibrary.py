@@ -1,4 +1,5 @@
 from pyModbusTCP.client import ModbusClient
+from futuraMbRegisters import *
 import time
 import struct
 
@@ -15,12 +16,19 @@ class FuturaLibrary(object):
             raise AssertionError('Modbus client cannot be opened.')
 
     def read_holding_register(self, reg):
-        #data = self._mbClient.read_holding_registers(int(reg), 1)
-        #if data:
-        #    self._justReadReg = data[0]
-        #else:
-        #    raise AssertionError('Holding register %s cannot be read.' % reg)
-        self._justReadReg = 10
+        data = self._mbClient.read_holding_registers(int(reg), 1)
+        if data:
+            self._justReadReg = data[0]
+        else:
+            raise AssertionError('Holding register %s cannot be read.' % reg)
+        return self._justReadReg
+
+    def read_holding_named_register(self, reg):
+        data = self._mbClient.read_holding_registers(futuraHoldingRegisters[reg], 1)
+        if data:
+            self._justReadReg = data[0]
+        else:
+            raise AssertionError('Holding named register %s cannot be read.' % reg)
         return self._justReadReg
 
     def read_input_register(self, reg):
@@ -31,12 +39,20 @@ class FuturaLibrary(object):
             raise AssertionError('Input register %s cannot be read.' % reg)
         return self._justReadReg
 
+    def read_input_named_register(self, reg):
+        data = self._mbClient.read_input_registers(futuraInputRegisters[reg], 1)
+        if data:
+            self._justReadReg = data[0]
+        else:
+            raise AssertionError('Input named register %s cannot be read.' % reg)
+        return self._justReadReg
+
     def read_holding_register_long(self, reg):
         data = self._mbClient.read_holding_registers(reg, 2)
         if data:
             self._justReadReg = data[0] | ( data[1] << 16 )
         else:
-            raise AssertionError('Holding register %s cannot be read.' % reg)
+            raise AssertionError('Holding long register %s cannot be read.' % reg)
         return self._justReadReg
 
     def result_is_equal_to(self, expected):
