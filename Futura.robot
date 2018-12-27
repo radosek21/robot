@@ -57,6 +57,10 @@ heating pwm
     log  ${heatingPwm}
     Return From Keyword  ${heatingPwm}
 
+heating enable
+    ${cfg_heating_enable} =  read holding named register  cfg_heating_enable
+    log  ${cfg_heating_enable}
+    Return From Keyword  ${cfg_heating_enable}
 setpoint
     ${setpoint} =  read holding named register  cfg_temp_set
     log  ${setpoint}

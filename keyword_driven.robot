@@ -14,16 +14,37 @@ Resource          Futura.robot
 
 *** Variables ***
 ${modbusClient} =  192.168.23.77
-*** Test Cases ***
 
+*** Test Cases ***
 Check heating pwm
     modbus client ${modbusClient} has been opened
+    ${cfg_heating_enable} =   heating enable
     ${indoorTemp} =  indoor temeprature
     ${setpoint} =  setpoint
     ${expectedPwm} =  evaluate  (${setpoint}-${indoorTemp})*100/30
     ${heatingPwm} =  heating pwm
     ${heatingPwm} is between 0 and 100
-    ${heatingPwm} =  set variable if  ${heatingPwm}>100   100
-    ${heatingPwm} =  set variable if  ${heatingPwm}<0   0
+    run keyword if  ${expectedPwm}>100  ${expectedPwm} =  100
+    run keyword if  ${expectedPwm} < 0  ${expectedPwm} =  0
+    ${expectedMinPwm} =  evaluate  ${expectedPwm}-10
+    ${expectedManPwm} =  evaluate  ${expectedPwm}+10
+    run keyword if  ${cfg_heating_enable}==1  ${heatingPwm} is between ${expectedMinPwm} and ${expectedManPwm}
+
+
+Check overpreasure
+    modbus client ${modbusClient} has been opened
+    ${cfg_heating_enable} =   heating enable
+    ${indoorTemp} =  indoor temeprature
+    ${setpoint} =  setpoint
+    ${expectedPwm} =  evaluate  (${setpoint}-${indoorTemp})*100/30
+    ${heatingPwm} =  heating pwm
+    ${heatingPwm} is between 0 and 100
+    run keyword if  ${expectedPwm}>100  ${expectedPwm} =  100
+    run keyword if  ${expectedPwm} < 0  ${expectedPwm} =  0
+    ${expectedMinPwm} =  evaluate  ${expectedPwm}-10
+    ${expectedManPwm} =  evaluate  ${expectedPwm}+10
+    run keyword if  ${cfg_heating_enable}==1  ${heatingPwm} is between ${expectedMinPwm} and ${expectedManPwm}
+
+
 
 
