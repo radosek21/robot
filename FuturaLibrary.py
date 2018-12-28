@@ -1,8 +1,15 @@
-from pyModbusTCP.client import ModbusClient
-from futuraMbRegisters import *
-import time
-import struct
+#!/usr/bin/env python
+__author__ = 'Radek Vanhara'
+__version__ = '1.0'
 
+import time
+from futuraMbRegisters import *
+from pyModbusTCP.client import ModbusClient
+
+'''
+    Following class defines low level methods to specify the Robot Framework 
+    supporting keywords.  
+'''
 class FuturaLibrary(object):
     def __init__(self):
         self._mbClient = None
@@ -55,25 +62,3 @@ class FuturaLibrary(object):
 
     def wait_for(self, t):
         time.sleep(float(t))
-
-    def should_cause_error(self, expression):
-        """Verifies that calculating the given ``expression`` causes an error.
-
-        The error message is returned and can be verified using, for example,
-        `Should Be Equal` or other keywords in `BuiltIn` library.
-
-        Examples:
-        | Should Cause Error | invalid            |                   |
-        | ${error} =         | Should Cause Error | 1 / 0             |
-        | Should Be Equal    | ${error}           | Division by zero. |
-        """
-        try:
-            self.push_buttons(expression)
-        except CalculationError as err:
-            return str(err)
-        else:
-            raise AssertionError("'%s' should have caused an error."
-                                 % expression)
-
-class CalculationError(Exception):
-    pass
