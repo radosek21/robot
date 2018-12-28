@@ -7,23 +7,6 @@ Library       FuturaLibrary.py
 modbus client ${client} has been opened
     open client  ${client}
 
-user reads the register ${addr}
-    ${value} =  read holding register  ${addr}
-    Return From Keyword  ${value}
-
-user reads the input register ${addr}
-    ${value} =  read input register  ${addr}
-    Return From Keyword  ${value}
-
-result is equal to ${value}
-    result is equal to   ${value}
-
-result is less then ${value}
-    result is less then   ${value}
-
-result is more then ${value}
-    result is more then   ${value}
-
 ${value} is between ${minValue} and ${maxValue}
     #Log  ${value}  ${minValue}  ${maxValue}
     is between    ${value}  ${minValue}  ${maxValue}
@@ -33,35 +16,71 @@ wait for ${time} seconds
 
 # High level keywords
 outdoor temeprature
-    ${outdoorTemp} =  read input named register  temp_ambient
+    ${outdoorTemp} =  read input register  temp_ambient
     log  ${outdoorTemp}
-    Return From Keyword  ${outdoorTemp}
+    [Return]  ${outdoorTemp}
 
 waste temeprature
-    ${wasteTemp} =  read input named register  temp_waste
+    ${wasteTemp} =  read input register  temp_waste
     log  ${wasteTemp}
-    Return From Keyword  ${wasteTemp}
+    [Return]  ${wasteTemp}
 
 fresh temeprature
-    ${freshTemp} =  read input named register  temp_fresh
+    ${freshTemp} =  read input register  temp_fresh
     log  ${freshTemp}
-    Return From Keyword  ${freshTemp}
+    [Return]  ${freshTemp}
 
 indoor temeprature
-    ${indoorTemp} =  read input named register  temp_indoor
+    ${indoorTemp} =  read input register  temp_indoor
     log  ${indoorTemp}
-    Return From Keyword  ${indoorTemp}
+    [Return]  ${indoorTemp}
 
 heating pwm
-    ${heatingPwm} =  read holding named register  fut_heating_pwm
+    ${heatingPwm} =  read holding register  fut_heating_pwm
     log  ${heatingPwm}
-    Return From Keyword  ${heatingPwm}
+    [Return]  ${heatingPwm}
 
-heating enable
-    ${cfg_heating_enable} =  read holding named register  cfg_heating_enable
+heating enabled
+    ${cfg_heating_enable} =  read holding register  cfg_heating_enable
     log  ${cfg_heating_enable}
-    Return From Keyword  ${cfg_heating_enable}
+    [Return]  ${cfg_heating_enable}
+
+enable heating
+    write register  cfg_heating_enable  1
+    # Wait a moment till the heating PWM is stabilized
+    wait for  1.0
+
+disable heating
+    write register  cfg_heating_enable  0
+    # Wait a moment till the heating PWM is stabilized
+    wait for  1.0
+
+start overpreasure for ${tm} seconds
+    write register  overpressure_tm  ${tm}
+    # Wait a moment till the engines PWM is stabilized
+    wait for  15.0
+
+start antiradon protection
+    write register  func_antiradon  1
+    # Wait a moment till the engines PWM is stabilized
+    wait for  15.0
+
+stop antiradon protection
+    write register  func_antiradon  0
+    # Wait a moment till the engines PWM is stabilized
+    wait for  15.0
+
+supply fan pwm
+    ${supplyPwm} =  read holding register  fut_fan_pwm_supply
+    log  ${supplyPwm}
+    [Return]  ${supplyPwm}
+
+exhaust fan pwm
+    ${exhaustPwm} =  read holding register  fut_fan_pwm_exhaust
+    log  ${exhaustPwm}
+    [Return]  ${exhaustPwm}
+
 setpoint
-    ${setpoint} =  read holding named register  cfg_temp_set
+    ${setpoint} =  read holding register  cfg_temp_set
     log  ${setpoint}
-    Return From Keyword  ${setpoint}
+    [Return]  ${setpoint}

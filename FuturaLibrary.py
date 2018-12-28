@@ -6,7 +6,6 @@ import struct
 class FuturaLibrary(object):
     def __init__(self):
         self._mbClient = None
-        self._justReadReg = None
     
     def open_client(self, hostAddr = 'localhost'):
         if self._mbClient:
@@ -16,68 +15,46 @@ class FuturaLibrary(object):
             raise AssertionError('Modbus client cannot be opened.')
 
     def read_holding_register(self, reg):
-        data = self._mbClient.read_holding_registers(int(reg), 1)
-        if data:
-            self._justReadReg = data[0]
-        else:
-            raise AssertionError('Holding register %s cannot be read.' % reg)
-        return self._justReadReg
-
-    def read_holding_named_register(self, reg):
         data = self._mbClient.read_holding_registers(futuraHoldingRegisters[reg], 1)
-        if data:
-            self._justReadReg = data[0]
-        else:
+        if not data:
             raise AssertionError('Holding named register %s cannot be read.' % reg)
-        return self._justReadReg
-
-    def read_input_register(self, reg):
-        data = self._mbClient.read_input_registers(int(reg), 1)
-        if data:
-            self._justReadReg = data[0]
-        else:
-            raise AssertionError('Input register %s cannot be read.' % reg)
-        return self._justReadReg
-
-    def read_input_named_register(self, reg):
-        data = self._mbClient.read_input_registers(futuraInputRegisters[reg], 1)
-        if data:
-            self._justReadReg = data[0]
-        else:
-            raise AssertionError('Input named register %s cannot be read.' % reg)
-        return self._justReadReg
+        return data[0]
 
     def read_holding_register_long(self, reg):
-        data = self._mbClient.read_holding_registers(reg, 2)
-        if data:
-            self._justReadReg = data[0] | ( data[1] << 16 )
-        else:
+        data = self._mbClient.read_holding_registers(futuraHoldingRegisters[reg], 2)
+        if not data:
             raise AssertionError('Holding long register %s cannot be read.' % reg)
-        return self._justReadReg
+        return data[0] | ( data[1] << 16 )
 
-    def result_is_equal_to(self, expected):
-        if self._justReadReg != float(expected):
-            raise AssertionError('%s != %s' % (self._justReadReg, expected))
+    def write_register(self, reg, value):
+        if not self._mbClient.write_single_register(futuraHoldingRegisters[reg], int(value)):
+            raise AssertionError('Holding named register %s cannot be written.' % reg)
 
-    def result_is_less_then(self, value):
-        if self._justReadReg >= float(value):
-            raise AssertionError('%s >= %s' % (self._justReadReg, value))
+    def read_input_register(self, reg):
+        data = self._mbClient.read_input_registers(futuraInputRegisters[reg], 1)
+        if not data:
+            raise AssertionError('Input named register %s cannot be read.' % reg)
+        return data[0]
 
-    def result_is_more_then(self, value):
-        if self._justReadReg <= float(value):
-            raise AssertionError('%s <= %s' % (self._justReadReg, value))
+    def is_equal_to(self, a, b):
+        if float(a) != float(b):
+            raise AssertionError('%s != %s' % (a, b))
 
-    def result_is_between(self, value1, value2):
-        if self._justReadReg < float(value1) or self._justReadReg > float(value2):
-            raise AssertionError('%s not in range [%s, %s]' % (self._justReadReg, value1, value2))
+    def is_less_then(self, a, b):
+        if float(a) >= float(b):
+            raise AssertionError('%s >= %s' % (a, value))
+
+    def is_more_then(self, a, b):
+        if float(a) <= float(b):
+            raise AssertionError('%s <= %s' % (a, b))
 
     def is_between(self, value, minVal, maxVal):
         result = True if float(minVal) <= float(value) <= float(maxVal) else False
         if not result:
-            raise AssertionError('%s not in range [%s, %s]' % (self._justReadReg, minVal, maxVal))
+            raise AssertionError('%s not in range [%s, %s]' % (value, minVal, maxVal))
 
     def wait_for(self, t):
-        time.sleep(t)
+        time.sleep(float(t))
 
     def should_cause_error(self, expression):
         """Verifies that calculating the given ``expression`` causes an error.
