@@ -1,5 +1,6 @@
 *** Settings ***
 Library       JltModbusTcp.py
+Library       PyKeywords.py
 
 
 *** Keywords ***
@@ -38,7 +39,7 @@ fresh temeprature
     [Return]  ${freshTemp}
 
 indoor temeprature
-    ${indoorTemp} =   readFormatedHolding   temp_indoor
+    ${indoorTemp} =   temp_indoor
     log  ${indoorTemp}
     [Return]  ${indoorTemp}
 
@@ -55,7 +56,7 @@ heating enabled
 enable heating
     writeFormatedHolding  cfg_heating_enable  1
     # Wait a moment till the heating PWM is stabilized
-    wait for  1.0
+    wait for  10.0
 
 disable heating
     writeFormatedHolding  cfg_heating_enable  0

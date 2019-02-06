@@ -1,11 +1,21 @@
 from pyModbusTCP.client import ModbusClient
+from futuraMbRegisters import *
+
+
+def isNumber(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
 
 
 class JltModbusTcp(ModbusClient):
-    def __init__(self, host = 'localhost', port = 502):
-        super(JltModbusTcp, self).__init__(host=host, port=port)
-        self.inputRegs = None
-        self.holdingRegs = None
+    def __init__(self, host = '192.168.23.216', port = 502):
+        super(JltModbusTcp, self).__init__(host=host, port=port, auto_open=True, auto_close=True)
+        self.inputRegs = futuraInputRegisters
+        self.holdingRegs = futuraHoldingRegisters
     # *********************************************************************
     # LOW LEVEL FUNCTIONS DEFINITIONS
     # *********************************************************************
@@ -31,52 +41,95 @@ class JltModbusTcp(ModbusClient):
 
     def write(self, regName, value, size=2):
         data = [((value >> (i*16)) & 0xFFFF) for i in range(size)]
-        ret = self.mbTcp.write_multiple_registers(self.holdingRegs[regName]['regNr'], data)
+        ret = self.write_multiple_registers(self.holdingRegs[regName]['regNr'], data)
         if not ret:
             raise Exception('writeHoldingExtraLong: write error')
 
+
     # *********************************************************************
-    # HIGHER LEVEL FUNCTIONS DEFINITIONS
+    # READ FORMATED MODBUS HOLDING REGISTERS
+    # *********************************************************************
+    def readFormatedHolding(self, reg):
+        try:
+            size = int(self.holdingRegs[reg]['size'])
+        except ValueError:
+            size = 1
+
+        power = 1
+        val = self.readHolding(reg, size)
+        if isNumber( self.holdingRegs[reg]['power']):
+           power = self.holdingRegs[reg]['power'] * 1.0
+
+        if self.holdingRegs[reg]['format'] == 'F':
+            return round(val * 0.1, 1)
+        elif self.holdingRegs[reg]['format'] in ['IS', 'SINT']:
+            if val & 0x8000:
+                val = val & 0x7FFF - 0xFFFF
+                val = val * -1.0
+
+        if power != 1:
+            return round(val/power, 1)
+        else:
+            return int(val)
+
+
+    # *********************************************************************
+    # READ FORMATED MODBUS INPUT REGISTERS
     # *********************************************************************
     def readFormatedInput(self, reg):
         try:
-            size = self.inputRegs[reg]['size']
+            size = int(self.inputRegs[reg]['size'])
         except ValueError:
             size = 1
+
+        power = 1
         val = self.readInput(reg, size)
+        if isNumber( self.inputRegs[reg]['power']):
+           power = self.inputRegs[reg]['power'] * 1.0
+
         if self.inputRegs[reg]['format'] == 'F':
             return round(val * 0.1, 1)
-        elif self.inputRegs[reg]['format'] == 'IS':
-            return val if not val & 0x8000 else val & 0x7FFF - 0xFFFF
-        return val
+        elif self.inputRegs[reg]['format'] in ['IS', 'SINT']:
+            if val & 0x8000:
+                val = val & 0x7FFF - 0xFFFF
+                val = val * -1.0
 
-    def readFormatedHolding(self, reg):
-        try:
-            size = self.holdingRegs[reg]['size']
-        except ValueError:
-            size = 1
-        val = self.readHolding(reg, size)
-        if self.holdingRegs[reg]['format'] == 'F':
-            return round(val * 0.1, 1)
-        elif self.holdingRegs[reg]['format'] == 'IS':
-            return val if not val & 0x8000 else val & 0x7FFF - 0xFFFF
-        return val
+        if power > 1:
+            return round(val/power, 1) if val>0 else 0
+        else:
+            return int(val)
 
 
+    # *********************************************************************
+    # READ FORMATED MODBUS HOLDING REGISTERS
+    # *********************************************************************
     def writeFormatedHolding(self, reg, value):
         try:
-            size = self.holdingRegs[reg]['size']
+            size = int(self.holdingRegs[reg]['size'])
         except ValueError:
             size = 1
-        if self.holdingRegs[reg]['format'] == 'F':
-            value = int(value * 10)
-        elif self.holdingRegs[reg]['format'] == 'IS':
-            value = value & 0xFFFF if value >= 0 else value & 0xFFFF | 0x8000
-        data = [((value >> (i * 16)) & 0xFFFF) for i in range(size)]
-        ret = self.write_multiple_registers(self.holdingRegs[reg]['regNr'], data)
-        if not ret:
-            raise Exception('writeFormatedHolding: write error')
 
+        power = 1
+        if isNumber( self.holdingRegs[reg]['power']):
+           power = self.holdingRegs[reg]['power'] * 1.0
+
+
+        value = eval(value)
+        value *= power
+        value = round(value)
+
+        if self.holdingRegs[reg]['format'] in ['IS', 'SINT']:
+            if value < 0:
+                value = (0xFFFF - abs(value)) | 0x8000
+            else:
+                value = value & 0x7FFF
+        print(value, size)
+        self.write(reg, value, size)
+
+
+    # *********************************************************************
+    # HIGHT LEVEL FUNC
+    # *********************************************************************
     def mac_address(self):
         #print('{:012X}'.format(mac))
         return self.readInput('mac_address0', 3)
@@ -103,16 +156,16 @@ class JltModbusTcp(ModbusClient):
         return self.readInput('sys_warning0', 2)
 
     def temp_ambient(self):
-        return self.readInput('fut_temp_ambient', 1) * 0.1
+        return round(self.readInput('fut_temp_ambient', 1) * 0.1, 1)
 
     def temp_fresh(self):
-        return self.readInput('fut_temp_fresh', 1) * 0.1
+        return round(self.readInput('fut_temp_fresh', 1) * 0.1, 1)
 
     def temp_indoor(self):
-        return self.readInput('fut_temp_indoor', 1) * 0.1
+        return round(self.readInput('fut_temp_indoor', 1) * 0.1, 1)
 
     def temp_waste(self):
-        return self.readInput('fut_temp_waste', 1) * 0.1
+        return round(self.readInput('fut_temp_waste', 1) * 0.1, 1)
 
     def humi_ambient(self):
         return self.readInput('fut_humi_ambient', 1) * 0.1
@@ -136,4 +189,5 @@ class JltModbusTcp(ModbusClient):
         return self.readInput('fut_heating_power', 1)
 
     def temp_set(self):
-        return self.readHolding('cfg_temp_set', 1) * 0.1
+        print(self.readHolding('cfg_temp_set', 1))
+        return round(self.readHolding('cfg_temp_set', 1) * 0.1, 1)

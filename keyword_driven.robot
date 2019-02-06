@@ -21,6 +21,7 @@ Check heating pwm
     ${expectedMinPwm} =  evaluate  ${expectedPwm} - ${10}
     ${expectedManPwm} =  evaluate  ${expectedPwm} + ${10}
     ${heatingPwm} is between ${expectedMinPwm} and ${expectedManPwm}
+    indoor temeprature is between 0 and 100
     disable heating
 
 Check overpreasure enabled

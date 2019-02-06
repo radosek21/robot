@@ -1,165 +1,153 @@
 # -*- coding: utf-8 -*-
 
-
 futuraInputRegisters = {
-'serial_number0': 1,    #s�riov� ��slo za��zen�, bity 0..15
-'serial_number1': 2,    #s�riov� ��slo za��zen�, bity 16..31
-'mac_address0': 3,    #MAC adresa za��zen�
-'mac_address1': 4,    #MAC adresa za��zen�
-'mac_address2': 5,    #MAC adresa za��zen�
-'hw_version0': 6,    #verze hardware
-'hw_version1': 7,    #verze hardware
-'fw_version0': 8,    #verze firmware
-'fw_version1': 9,    #verze firmware
-'sys_build_number0': 10,    #fw build number
-'sys_build_number1': 11,    #fw build number
-'sys_regmap_version0': 12,    #verze mapy registr�
-'sys_regmap_version1': 13,    #verze mapy registr�
-'sys_options': 14,    #varianta za��zen� (0=Futura L, 1=Futura M)
-'sys_config': 15,    #mo�nosti za��zen� (b0=int. heating, b1=CB cooling, b2=CB heating)
-'sys_mode0': 16,    #aktu�ln� re�im za��zen�
-'sys_mode1': 17,    #aktu�ln� re�im za��zen�, zat�m nevyu�ito
-'sys_error0': 18,    #poruchy za��zen�
-'sys_error1': 19,    #poruchy za��zen�
-'sys_warning0': 20,    #v�strahy za��zen�
-'sys_warning1': 21,    #v�strahy za��zen�
-'temp_ambient': 30,    #teplota venkovn�ho vzduchu
-'temp_fresh': 31,    #teplota dod�van�ho vzduchu do domu
-'temp_indoor': 32,    #teplota ods�van�ho vzduchu z domu
-'temp_waste': 33,    #teplota odpadn�ho vzduchu
-'humi_ambient': 34,    #relativn� vlhkost venkovn�ho vzduchu
-'humi_fresh': 35,    #relativn� vlhkost dod�van�ho vzduchu do domu
-'humi_indoor': 36,    #relativn� vlhkost ods�van�ho vzduchu z domu
-'humi_waste': 37,    #relativn� vlhkost odpadn�ho vzduchu
-'fut_t_out': 38,    #teplota extern�ho NTC senzoru venkovn� teploty
-'filter_wear_level': 40,    #hodnota zanesen� filtr� 0-100%
-'power_consumption': 41,    #aktu�ln� p��kon jednotky
-'heat_recovering': 42,    #aktu�ln� hodnota zp�tn� z�sk�van�ho tepla
-'heating_power': 43,    #v�kon topen� doh�evu
-'air_flow': 44,    #aktu�ln� pr�tok vzduchu
-'fan_pwm_supply': 45,    #v�kon ventil�toru pro p��vod vzduchu
-'fan_pwm_exhaust': 46,    #v�kon ventil�toru pro odtah vzduchu
-'fan_rpm_supply': 47,    #ot��ky ventil�toru pro p��vod vzduchu
-'fan_rpm_exhaust': 48,    #ot��ky ventil�toru pro odtah vzduchu
-'voltage_input1': 49,    #nap�t� vstupu UIN1
-'voltage_input2': 50,    #nap�t� vstupu UIN2
-'digital_inputs': 51,    #digit�ln� vstupy (bit0 - user button, bit1 - fact button, bit2 - boost input, bit3 - uint1, bit4 � uint2)
-'sys_battery_voltage': 52,    #napt� z�lo�n� baterie pro RTC
-# Sb�rnice periferi� Modbus RTU
-'mbdev_reads0': 60,    #statistika, po�et �ten�
-'mbdev_reads1': 61,    #statistika, po�et �ten�
-'mbdev_writes0': 62,    #statistika, po�et z�pis�
-'mbdev_writes1': 63,    #statistika, po�et z�pis�
-'mbdev_fails0': 64,    #statistika, po�et chyb
-'mbdev_fails1': 65,    #statistika, po�et chyb
-'mbdev_mk_ui': 66,    #p�ipojen� ovlada�e UI, bity 0..2 (bity p�edstavuj� jednotliv� ovlada�e )
-'mbdev_mk_sens0': 67,    #p�ipojen� CO2 senzory, bity 0..15
-'mbdev_mk_sens1': 68,    #p�ipojen� CO2 senzory, bity 16..31
-'mbdev_coolbreeze': 69,    #p�ipojen� coolbreeze, bit 0
-'mbdev_valve_sup0': 70,    #p�ipojen� klapky na p��vodu, bity 0..15
-'mbdev_valve_sup1': 71,    #p�ipojen� klapky na p��vodu, bity 16..31
-'mbdev_valve_exh0': 72,    #p�ipojen� klapky na odtahu, bity 0..15
-'mbdev_valve_exh1': 73,    #p�ipojen� klapky na odtahu, bity 16..31
-'mbdev_buttons': 74,    #p�ipojen� tla��tka boost, bity 0..7
-# Ovlada�e UI Mikroklima
-'mk_ui_mb_address_0': 100,    #Ovlada� 0 � MB RTU adresa
-'mk_ui_options_0': 101,    #Ovlada� 0 � bit0=nepou��vat v auto. re�imu
-'mk_ui_co2_0': 102,    #Ovlada� 0 � m��en� hodnota CO2
-'mk_ui_temp_0': 103,    #Ovlada� 0 � m��en� teplota
-'mk_ui_humi_0': 104,    #Ovlada� 0 � m��en� relativn� vlhkost
-'mk_ui_mb_address_1': 105,    #Ovlada� 1 � MB RTU adresa
-'mk_ui_options_1': 106,    #Ovlada� 1 � bit0=nepou��vat v auto. re�imu
-'mk_ui_co2_1': 107,    #Ovlada� 1 � m��en� hodnota CO2
-'mk_ui_temp_1': 108,    #Ovlada� 1 � m��en� teplota
-'mk_ui_humi_1': 109,    #Ovlada� 1 � m��en� relativn� vlhkost
-'mk_ui_mb_address_2': 110,    #Ovlada� 2 � MB RTU adresa
-'mk_ui_options_2': 111,    #Ovlada� 2 � bit0=nepou��vat v auto. re�imu
-'mk_ui_co2_2': 112,    #Ovlada� 2 � m��en� hodnota CO2
-'mk_ui_temp_2': 113,    #Ovlada� 2 � m��en� teplota
-'mk_ui_humi_2': 114,    #Ovlada� 2 � m��en� relativn� vlhkost
-# CO2 senzory Mikroklima
-'mk_sens_mb_address_0': 115,    #Senzor 0 � MB RTU adresa
-'mk_sens_options_0': 116,    #Senzor 0 � bit0=nepou��vat v auto. re�imu
-'mk_sens_co2_0': 117,    #Senzor 0 � m��en� hodnota CO2
-'mk_sens_temp_0': 118,    #Senzor 0 � m��en� teplota
-'mk_sens_humi_0': 119,    #Senzor 0 � m��en� relativn� vlhkost
-# � dal��ch 7 senzor�
-# Tepeln� v�m�n�k
-'exchanger_status': 900,
-'exchanger_valve_pos0': 901,
-'exchanger_valve_pos1': 902,
-'exchanger_valve_pos2': 903,
-'exchanger_valve_pos3': 904,
-'exchanger_maxopen0': 905,
-'exchanger_maxopen1': 906,
-'exchanger_maxopen2': 907,
-'exchanger_maxopen3': 908,
-'in_position': 909,
-'switch_tm': 910,
-'period1': 911,
-'period2': 912,
-'switch_count0': 913,
-'switch_count1': 914,
-'valve_fail_count_0': 915,
-'valve_fail_count_1': 916,
-'valve_fail_count_2': 917,
-'valve_fail_count_3': 918,
-# Skute�n� hodnoty �idel
-'t_ambient': 930,    #teplota venkovn�ho vzduchu
-'t_fresh': 931,    #teplota dod�van�ho vzduchu do domu
-'t_indoor': 932,    #teplota ods�van�ho vzduchu z domu
-'t_waste': 933,    #teplota odpadn�ho vzduchu
-'rh_ambient': 934,    #relativn� vlhkost venkovn�ho vzduchu
-'rh_fresh': 935,    #relativn� vlhkost dod�van�ho vzduchu do domu
-'rh_indoor': 936,    #relativn� vlhkost ods�van�ho vzduchu z domu
-'rh_waste': 937,    #relativn� vlhkost odpadn�ho vzduchu
-'t_ntc': 938,    #teplota extern�ho NTC senzoru venkovn� teploty
-# Coolbreeze
-'cb_mode': 950,
-'cb_power': 951,
-'cb_temp_indoor': 952,
-'cb_humi_indoor': 953,
-'cb_temp_ntc': 954,
-'cb_temp_exch': 955,
-'cb_temp_out': 956,
-'cb_out_status': 957,
-'cb_status': 958,
-'cb_cur_power': 959,
-'cb_errcode': 960,
-'cb_fw_version': 961,
-'cb_power_consumption': 962,
+'fact_device_id': {'regNr': 0, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #identifikace zařízení, pro Futuru2 vždy 39
+'fact_serial_number': {'regNr': 1, 'size': 2, 'format': 'UINT', 'power': '', 'min': 2, 'max': ''},    #sériové číslo zařízení, bity 0..15
+'fact_ethernet_mac': {'regNr': 3, 'size': 3, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #MAC adresa zařízení
+'fact_hw_revision': {'regNr': 6, 'size': 2, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #verze hardware
+'firm_revision': {'regNr': 8, 'size': 2, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #verze firmware
+'sys_build_number': {'regNr': 10, 'size': 2, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #fw build number
+'sys_regmap_version': {'regNr': 12, 'size': 2, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #verze mapy registrů
+'sys_options': {'regNr': 14, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #varianta zařízení (0=Futura L, 1=Futura M)
+'fut_config': {'regNr': 15, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #možnosti zařízení (b0=int. heating, b1=CB cooling, b2=CB heating)
+'fut_mode': {'regNr': 16, 'size': 2, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #aktuální režim zařízení
+'fut_error': {'regNr': 18, 'size': 2, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #poruchy zařízení
+'fut_warning': {'regNr': 20, 'size': 2, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #výstrahy zařízení
+'fut_temp_ambient': {'regNr': 30, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #teplota venkovního vzduchu
+'fut_temp_fresh': {'regNr': 31, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #teplota dodávaného vzduchu do domu
+'fut_temp_indoor': {'regNr': 32, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #teplota odsávaného vzduchu z domu
+'fut_temp_waste': {'regNr': 33, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #teplota odpadního vzduchu
+'fut_humi_ambient': {'regNr': 34, 'size': 1, 'format': 'SINT', 'power': 10, 'min': 0, 'max': 100},    #relativní vlhkost venkovního vzduchu
+'fut_humi_fresh': {'regNr': 35, 'size': 1, 'format': 'SINT', 'power': 10, 'min': 0, 'max': 100},    #relativní vlhkost dodávaného vzduchu do domu
+'fut_humi_indoor': {'regNr': 36, 'size': 1, 'format': 'SINT', 'power': 10, 'min': 0, 'max': 100},    #relativní vlhkost odsávaného vzduchu z domu
+'fut_humi_waste': {'regNr': 37, 'size': 1, 'format': 'SINT', 'power': 10, 'min': 0, 'max': 100},    #relativní vlhkost odpadního vzduchu
+'fut_t_out': {'regNr': 38, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #teplota externího NTC senzoru venkovní teploty
+'fut_filter_wear_level': {'regNr': 40, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #hodnota zanesení filtrů 0-100%
+'fut_power_consumption': {'regNr': 41, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #aktuální příkon jednotky
+'fut_heat_recovering': {'regNr': 42, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #aktuální hodnota zpětně získávaného tepla
+'fut_heating_power': {'regNr': 43, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #výkon topení dohřevu
+'fut_air_flow': {'regNr': 44, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #aktuální průtok vzduchu
+'fut_fan_pwm_supply': {'regNr': 45, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #výkon ventilátoru pro přívod vzduchu
+'fut_fan_pwm_exhaust': {'regNr': 46, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #výkon ventilátoru pro odtah vzduchu
+'fut_fan_rpm_supply': {'regNr': 47, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #otáčky ventilátoru pro přívod vzduchu
+'fut_fan_rpm_exhaust': {'regNr': 48, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #otáčky ventilátoru pro odtah vzduchu
+'fut_uin1_voltage': {'regNr': 49, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #napětí vstupu UIN1
+'fut_uin2_voltage': {'regNr': 50, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #napětí vstupu UIN2
+'fut_dig_inputs': {'regNr': 51, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #digitální vstupy (bit0 - user button, bit1 - fact button, bit2 - boost input, bit3 - uint1, bit4 – uint2)
+'sys_battery_voltage': {'regNr': 52, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #naptí záložní baterie pro RTC
+'mbdev_stat_reads': {'regNr': 60, 'size': 2, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #statistika, počet čtení
+'mbdev_stat_writes': {'regNr': 62, 'size': 2, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #statistika, počet zápisů
+'mbdev_stat_fails': {'regNr': 64, 'size': 2, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #statistika, počet chyb
+'mbdev_connected_mk_ui': {'regNr': 66, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #připojené ovladače UI, bity 0..2 (bity představují jednotlivé ovladače )
+'mbdev_connected_mk_sens': {'regNr': 67, 'size': 2, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #připojené CO2 senzory, bity 0..15
+'mbdev_connected_coolbreeze': {'regNr': 69, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #připojený coolbreeze, bit 0
+'mbdev_connected_valve_supply': {'regNr': 70, 'size': 2, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #připojené klapky na přívodu, bity 0..15
+'mbdev_connected_valve_exhaust': {'regNr': 72, 'size': 2, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #připojené klapky na odtahu, bity 0..15
+'mbdev_connected_button': {'regNr': 74, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #připojené tlačítka boost, bity 0..7
+'mbuimk_mb_address_0': {'regNr': 100, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #Ovladač 0 – MB RTU adresa
+'mbuimk_options_0': {'regNr': 101, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #Ovladač 0 – bit0=nepoužívat v auto. režimu
+'mbuimk_co2_0': {'regNr': 102, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #Ovladač 0 – měřená hodnota CO2
+'mbuimk_temp_0': {'regNr': 103, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #Ovladač 0 – měřená teplota
+'mbuimk_humi_0': {'regNr': 104, 'size': 1, 'format': 'UINT', 'power': 10, 'min': '', 'max': ''},    #Ovladač 0 – měřená relativní vlhkost
+'mbuimk_mb_address_1': {'regNr': 105, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #Ovladač 1 – MB RTU adresa
+'mbuimk_options_1': {'regNr': 106, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #Ovladač 1 – bit0=nepoužívat v auto. režimu
+'mbuimk_co2_1': {'regNr': 107, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #Ovladač 1 – měřená hodnota CO2
+'mbuimk_temp_1': {'regNr': 108, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #Ovladač 1 – měřená teplota
+'mbuimk_humi_1': {'regNr': 109, 'size': 1, 'format': 'UINT', 'power': 10, 'min': '', 'max': ''},    #Ovladač 1 – měřená relativní vlhkost
+'mbuimk_mb_address_2': {'regNr': 110, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #Ovladač 2 – MB RTU adresa
+'mbuimk_options_2': {'regNr': 111, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #Ovladač 2 – bit0=nepoužívat v auto. režimu
+'mbuimk_co2_2': {'regNr': 112, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #Ovladač 2 – měřená hodnota CO2
+'mbuimk_temp_2': {'regNr': 113, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #Ovladač 2 – měřená teplota
+'mbuimk_humi_2': {'regNr': 114, 'size': 1, 'format': 'UINT', 'power': 10, 'min': '', 'max': ''},    #Ovladač 2 – měřená relativní vlhkost
+'mbsemk_mb_address_0': {'regNr': 115, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #Senzor 0 – MB RTU adresa
+'mbsemk_options_0': {'regNr': 116, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #Senzor 0 – bit0=nepoužívat v auto. režimu
+'mbsemk_co2_0': {'regNr': 117, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #Senzor 0 – měřená hodnota CO2
+'mbsemk_temp_0': {'regNr': 118, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #Senzor 0 – měřená teplota
+'mbsemk_humi_0': {'regNr': 119, 'size': 1, 'format': 'UINT', 'power': 10, 'min': '', 'max': ''},    #Senzor 0 – měřená relativní vlhkost
+'exch_state': {'regNr': 900, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_valve_position_0': {'regNr': 901, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_valve_position_1': {'regNr': 902, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_valve_position_2': {'regNr': 903, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_valve_position_3': {'regNr': 904, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_valve_maxopen_0': {'regNr': 905, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_valve_maxopen_1': {'regNr': 906, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_valve_maxopen_2': {'regNr': 907, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_valve_maxopen_3': {'regNr': 908, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_in_position': {'regNr': 909, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_switch_tm': {'regNr': 910, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_period1': {'regNr': 911, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_period2': {'regNr': 912, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_switch_count, bytes 0, 1': {'regNr': 913, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_switch_count, bytes 2, 3': {'regNr': 914, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_valve_fail_count_0': {'regNr': 915, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_valve_fail_count_1': {'regNr': 916, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_valve_fail_count_2': {'regNr': 917, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'exch_valve_fail_count_3': {'regNr': 918, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'fut_t_amb': {'regNr': 930, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #teplota venkovního vzduchu
+'fut_t_fre': {'regNr': 931, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #teplota dodávaného vzduchu do domu
+'fut_t_ind': {'regNr': 932, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #teplota odsávaného vzduchu z domu
+'fut_t_was': {'regNr': 933, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #teplota odpadního vzduchu
+'fut_rh_amb': {'regNr': 934, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #relativní vlhkost venkovního vzduchu
+'fut_rh_fre': {'regNr': 935, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #relativní vlhkost dodávaného vzduchu do domu
+'fut_rh_ind': {'regNr': 936, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #relativní vlhkost odsávaného vzduchu z domu
+'fut_rh_was': {'regNr': 937, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #relativní vlhkost odpadního vzduchu
+'fut_t_out': {'regNr': 938, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #teplota externího NTC senzoru venkovní teploty
+'cb_mode': {'regNr': 950, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'cb_power': {'regNr': 951, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'cb_temp_indoor': {'regNr': 952, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #
+'cb_humi_indoor': {'regNr': 953, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #
+'cb_temp_ntc': {'regNr': 954, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #
+'cb_temp_exch': {'regNr': 955, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #
+'cb_temp_out': {'regNr': 956, 'size': 1, 'format': 'SINT', 'power': 10, 'min': '', 'max': ''},    #
+'cb_out_status': {'regNr': 957, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'cb_status': {'regNr': 958, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'cb_cur_power': {'regNr': 959, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'cb_errcode': {'regNr': 960, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'cb_fw_version': {'regNr': 961, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
+'cb_power_consumption': {'regNr': 962, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #
 }
 
 futuraHoldingRegisters = {
-'boost_tm': 1,    #Funkce Boost �ten�: zb�vaj�c� �as z�pis: �as 0 � 7200 s
-'circulation_tm': 2,    #Funkce Cirkulace �ten�: zb�vaj�c� �as z�pis: �as 0 � 7200 s
-'overpressure_tm': 3,    #Funkce P�etlak �ten�: zb�vaj�c� �as z�pis: �as 0 � 7200 s
-'night_tm': 4,    #Funkce Noc �ten�: zb�vaj�c� �as z�pis: �as 0 � 7200 s
-'party_tm': 5,    #Funkce Party �ten�: zb�vaj�c� �as z�pis: �as 0 � 28800 s
-'away_begin0': 6,    #Funkce Dovolen� - za��tek, unix timestamp, local time, 0=off
-'away_begin1': 7,    #Funkce Dovolen� - za��tek, unix timestamp, local time, 0=off
-'away_end0': 8,    #Funkce Dovolen� - konec, unix timestamp, local time, 0=off
-'away_end1': 9,    #Funkce Dovolen� - konec, unix timestamp, local time, 0=off
-'cfg_temp_set': 10,    #Preferovan� teplota
-'cfg_humi_set': 11,    #Preferovan� vlhkost
-'func_time_prog': 12,    #Zapnut�/vypnut� �asov�ho programu
-'func_antiradon': 13,    #Povolen� protiradonov� ochrany
-'cfg_bypass_enable': 14,    #Povolen� automatick�ho ��zen� bypasu
-'cfg_heating_enable': 15,    #Povolen� topen� doh�evu
-'cfg_cooling_enable': 16,    #Povolen� topen� doh�evu
-'cfg_comfort_enable': 17,    #Povolen� komfortn�ho doh�evu
-'access_code': 900,    #povolen� p��stupu k servisn�m registr�m �ten�: povolen� p��stup 0/1 Z�pis: spr�vn� k�d povoluje p��stup, jin� hodnota zakazuje
-'fut_control': 901,    #registr pro ��d�c� p��kazy �ten�: odpov�� na p��kaz, pouze 16 bit� Z�pis: p��kaz, pouze 16 bit�
-'fut_parametr0': 902,    #parametr pro ��d�c� p��kaz, spodn�ch 16 bit�
-'fut_parametr1': 903,    #parametr pro ��d�c� p��kaz, horn�ch 16 bit�
-'fut_fan_pwm_supply': 904,    #aktu�ln� nastaven� ventil�tor�, b�hem servisn�ho re�imu umo��uje p��m� ovl�d�n�
-'fut_fan_pwm_exhaust': 905,    #aktu�ln� nastaven� ventil�tor�, b�hem servisn�ho re�imu umo��uje p��m� ovl�d�n�
-'exch_mode': 906,    #aktu�ln� re�im v�m�n�ku (0, 1..8), b�hem servisn�ho re�imu umo��uje p��m� ovl�d�n�
-'exch_period1': 907,    #periody p�ekl�p�n� v�m�n�ku
-'exch_period2': 908,    #periody p�ekl�p�n� v�m�n�ku
-'fut_flaps': 909,    #stav klapek bypass a vysou�en�
-'fut_heating_pwm': 910,    #aktu�ln� v�kon vnit�n�ho topen�
-'cb_mode': 911,    #aktu�ln� re�im coolbreezu: b0=cool, b1=heat
-'cb_power': 912,    #aktu�ln� v�kon coolbreezu: 0..30
+'func_ventilation': {'regNr': 0, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 6.0},    #nastavený výkon větrání 0 – vypnuto 1..5 – přednastavená úroveň 1 až 5 6 – automatické větrání podle hodnoty CO2 nebo ext. vstupu
+'func_boost_tm': {'regNr': 1, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 7200.0},    #Funkce Boost čtení: zbývající čas zápis: čas 0 – 7200 s
+'func_circulation_tm': {'regNr': 2, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 7200.0},    #Funkce Cirkulace čtení: zbývající čas zápis: čas 0 – 7200 s
+'func_overpressure_tm': {'regNr': 3, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 7200.0},    #Funkce Přetlak čtení: zbývající čas zápis: čas 0 – 7200 s
+'func_night_tm': {'regNr': 4, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 7200.0},    #Funkce Noc čtení: zbývající čas zápis: čas 0 – 7200 s
+'func_party_tm': {'regNr': 5, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 28800.0},    #Funkce Party čtení: zbývající čas zápis: čas 0 – 28800 s
+'func_away_begin': {'regNr': 6, 'size': 2.0, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #Funkce Dovolená - začátek, unix timestamp, local time, 0=off
+'func_away_end': {'regNr': 8, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #Funkce Dovolená - konec, unix timestamp, local time, 0=off
+'func_away_end': {'regNr': 9, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #Funkce Dovolená - konec, unix timestamp, local time, 0=off
+'cfg_temp_set': {'regNr': 10, 'size': 1.0, 'format': 'UINT', 'power': 10.0, 'min': 50.0, 'max': 300.0},    #Preferovaná teplota
+'cfg_humi_set': {'regNr': 11, 'size': 1.0, 'format': 'UINT', 'power': 10.0, 'min': 0.0, 'max': 100.0},    #Preferovaná vlhkost
+'func_time_prog': {'regNr': 12, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 255.0},    #Zapnutí/vypnutí časového programu
+'func_antiradon': {'regNr': 13, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 255.0},    #Povolení protiradonové ochrany
+'cfg_bypass_enable': {'regNr': 14, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 255.0},    #Povolení automatického řízení bypasu
+'cfg_heating_enable': {'regNr': 15, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 255.0},    #Povolení topení dohřevu
+'cfg_cooling_enable': {'regNr': 16, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 255.0},    #Povolení topení dohřevu
+'cfg_comfort_enable': {'regNr': 17, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 255.0},    #Povolení komfortního dohřevu
+'access_code': {'regNr': 900, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #povolení přístupu k servisním registrům Čtení: povolený přístup 0/1 Zápis: správný kód povoluje přístup, jiná hodnota zakazuje
+'fut_control': {'regNr': 901, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': '0xFFFF'},    #registr pro řídící příkazy Čtení: odpověď na příkaz, pouze 16 bitů Zápis: příkaz, pouze 16 bitů
+'fut_parameter': {'regNr': 902, 'size': 2.0, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #parametr pro řídící příkaz, spodních 16 bitů
+'fut_fan_pwm_supply': {'regNr': 904, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 100.0},    #aktuální nastavení ventilátorů, během servisního režimu umožňuje přímé ovládání
+'fut_fan_pwm_exhaust': {'regNr': 905, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 100.0},    #aktuální nastavení ventilátorů, během servisního režimu umožňuje přímé ovládání
+'exch_mode': {'regNr': 906, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 8.0},    #aktuální režim výměníku (0, 1..8), během servisního režimu umožňuje přímé ovládání
+'exch_period1': {'regNr': 907, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #periody překlápění výměníku
+'exch_period2': {'regNr': 908, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #periody překlápění výměníku
+'fut_flaps': {'regNr': 909, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #stav klapek bypass a vysoušení
+'fut_heating_pwm': {'regNr': 910, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 100.0},    #aktuální výkon vnitřního topení
+'cb_mode': {'regNr': 911, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 1.0},    #aktuální režim coolbreezu: b0=cool, b1=heat
+'cb_power': {'regNr': 912, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': 0.0, 'max': 30.0},    #aktuální výkon coolbreezu: 0..30
+'fut_t_amb': {'regNr': 930, 'size': 1.0, 'format': 'SINT', 'power': 10.0, 'min': '', 'max': ''},    #teplota přiváděného vzduchu z venku
+'fut_rh_amb': {'regNr': 931, 'size': 1.0, 'format': 'SINT', 'power': 10.0, 'min': '', 'max': ''},    #relativní vlhkost přiváděného vzduchu z venku
+'fut_t_fre': {'regNr': 932, 'size': 1.0, 'format': 'SINT', 'power': 10.0, 'min': '', 'max': ''},    #teplota dodávaného vzduchu do domu
+'fut_rh_fre': {'regNr': 933, 'size': 1.0, 'format': 'SINT', 'power': 10.0, 'min': '', 'max': ''},    #relativní vlhkost dodávaného vzduchu do domu
+'fut_t_ind': {'regNr': 934, 'size': 1.0, 'format': 'SINT', 'power': 10.0, 'min': '', 'max': ''},    #teplota odsávaného vzduchu z domu
+'fut_rh_ind': {'regNr': 935, 'size': 1.0, 'format': 'SINT', 'power': 10.0, 'min': '', 'max': ''},    #relativní vlhkost odsávaného vzduchu z domu
+'fut_t_was': {'regNr': 936, 'size': 1.0, 'format': 'SINT', 'power': 10.0, 'min': '', 'max': ''},    #teplota odpadního vzduchu
+'fut_rh_was': {'regNr': 937, 'size': 1.0, 'format': 'SINT', 'power': 10.0, 'min': '', 'max': ''},    #relativní vlhkost odpadního vzduchu
+'fut_t_out': {'regNr': 938, 'size': 1.0, 'format': 'SINT', 'power': 10.0, 'min': '', 'max': ''},    #teplota externího NTC senzoru venkovní teploty
+'fut_fan_rpm_supply': {'regNr': 939, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #otáčky ventilátoru pro přívod vzduchu
+'fut_fan_rpm_exhaust': {'regNr': 940, 'size': 1.0, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #otáčky ventilátoru pro odtah vzduchu
+'fut_co2_ppm_max': {'regNr': 941, 'size': 2.0, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #maximální hodnota CO2 ze všech čidel
 }
 
