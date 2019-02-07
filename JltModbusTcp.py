@@ -12,7 +12,7 @@ def isNumber(s):
 
 
 class JltModbusTcp(ModbusClient):
-    def __init__(self, host = '192.168.23.216', port = 502):
+    def __init__(self, host = 'localhost', port = 502):
         super(JltModbusTcp, self).__init__(host=host, port=port, auto_open=True, auto_close=True)
         self.inputRegs = futuraInputRegisters
         self.holdingRegs = futuraHoldingRegisters
@@ -113,8 +113,7 @@ class JltModbusTcp(ModbusClient):
         if isNumber( self.holdingRegs[reg]['power']):
            power = self.holdingRegs[reg]['power'] * 1.0
 
-
-        value = eval(value)
+        value = float(value) if isNumber(value) else eval(value)
         value *= power
         value = round(value)
 

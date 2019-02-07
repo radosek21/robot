@@ -4,11 +4,8 @@ Library       PyKeywords.py
 
 
 *** Keywords ***
-# Low level keywords
-modbus client ${client} has been opened
-    open client  ${client}
 
-${value} is between ${minValue} and ${maxValue}
+"${value}" is between ${minValue} and ${maxValue}
     #Log  ${value}  ${minValue}  ${maxValue}
     is between    ${value}  ${minValue}  ${maxValue}
 
@@ -22,90 +19,73 @@ ${value1} is ${mul} times greater than ${value2}
 "${value1}" is equal to "${value2}"
     is_equal_to    ${value1}    ${value2}
 
-# High level keywords
-outdoor temeprature
-    ${outdoorTemp} =  readFormatedInput  temp_ambient
-    log  ${outdoorTemp}
-    [Return]  ${outdoorTemp}
-
-waste temeprature
-    ${wasteTemp} =  readFormatedInput  temp_waste
-    log  ${wasteTemp}
-    [Return]  ${wasteTemp}
-
-fresh temeprature
-    ${freshTemp} =  readFormatedInput  temp_fresh
-    log  ${freshTemp}
-    [Return]  ${freshTemp}
+# Testcase 1
 
 indoor temeprature
     ${indoorTemp} =   temp_indoor
     log  ${indoorTemp}
     [Return]  ${indoorTemp}
 
-current heating pwm
-    ${heatingPwm} =  readFormatedHolding  fut_heating_pwm
-    log  ${heatingPwm}
-    [Return]  ${heatingPwm}
-
-heating enabled
-    ${cfg_heating_enable} =  readFormatedHolding  cfg_heating_enable
-    log  ${cfg_heating_enable}
-    [Return]  ${cfg_heating_enable}
-
-enable heating
-    writeFormatedHolding  cfg_heating_enable  1
-    # Wait a moment till the heating PWM is stabilized
-    wait for  10.0
-
-disable heating
-    writeFormatedHolding  cfg_heating_enable  0
-    # Wait a moment till the heating PWM is stabilized
-    wait for  1.0
-
-start overpreasure for ${tm} seconds
-    writeFormatedHolding  overpressure_tm  ${tm}
-    # Wait a moment till the engines PWM is stabilized
-    wait for  15.0
-
-start antiradon protection
-    write register  func_antiradon  1
-    # Wait a moment till the engines PWM is stabilized
-    wait for  15.0
-
-stop antiradon protection
-    writeFormatedHolding  func_antiradon  0
-    # Wait a moment till the engines PWM is stabilized
-    wait for  15.0
-
-supply fan pwm
-    ${supplyPwm} =  readFormatedHolding  fut_fan_pwm_supply
-    log  ${supplyPwm}
-    [Return]  ${supplyPwm}
-
-exhaust fan pwm
-    ${exhaustPwm} =  readFormatedHolding  fut_fan_pwm_exhaust
-    log  ${exhaustPwm}
-    [Return]  ${exhaustPwm}
-
-setpoint
-    ${setpoint} =  readFormatedHolding  cfg_temp_set
-    log  ${setpoint}
-    [Return]  ${setpoint}
-
-
 indoor temperature is bellow setpoint by ${offset} degree
     ${indoorTemp} =  indoor temeprature
     writeFormatedHolding    cfg_temp_set   ${indoorTemp} + ${offset}
+
+heating function is ${enable}
+    Run Keyword If    '${enable}' == 'enabled'      writeFormatedHolding  cfg_heating_enable  1
+    Run Keyword If    '${enable}' == 'disabled'     writeFormatedHolding  cfg_heating_enable  0
+    wait for   10.0
+
+current heating power
+    ${heatingPower} =  readFormatedInput  fut_heating_power
+    log  ${heatingPower}
+    [Return]  ${heatingPower}
+
+
+heating power is ${power} watts
+    ${heatPower} =    current heating power
+    is_equal_to    ${heatPower}   ${power}
+
+
+# Testcase 2
+supply fan rmp
+    ${supplyRpm} =  readFormatedHolding  fut_fan_rpm_supply
+    log  ${supplyRpm}
+    [Return]  ${supplyRpm}
+
+exhaust fan rpm
+    ${exhaustRpm} =  readFormatedHolding  fut_fan_rpm_exhaust
+    log  ${exhaustRpm}
+    [Return]  ${exhaustRpm}
+
+
+ventilation is set to level ${level}
+    writeFormatedHolding  func_ventilation  ${level}
+    # Wait a moment till the engines rpmd is stabilized
+    wait for   10.0
+
+
+start overpreasure for ${seconds} seconds
+    writeFormatedHolding   func_overpressure_tm   ${seconds}
+    # Wait a moment till the engines rpm is stabilized
+    wait for  15.0
+
 
 overpreasure function is ${enable}
     Run Keyword If    '${enable}' == 'enabled'      start overpreasure for 60 seconds
     Run Keyword If    '${enable}' == 'disabled'     start overpreasure for 0 seconds
 
-antiradon function is ${enable}
-    Run Keyword If    '${enable}' == 'enabled'      start antiradon for 60 seconds
-    Run Keyword If    '${enable}' == 'disabled'     start antiradon for 0 seconds
 
-heating pwm is "${percent}"
-    ${heatPwm} =    current heating pwm
-    is_equal_to    ${heatpwm}   ${percent}
+# Testcase 2
+boost function has been started for ${minutes} minutes
+    ${seconds} =   evaluate   ${minutes} * ${60}
+    writeFormatedHolding   func_overpressure_tm   ${seconds}
+    # Wait a moment till the engines RPM is stabilized
+    wait for  15.0
+
+fan rpm
+    # Compute just an average of supply and exhast rpms
+    ${supplyRpm} =  readFormatedHolding  fut_fan_rpm_supply
+    ${exhaustRpm} =  readFormatedHolding  fut_fan_rpm_exhaust
+    ${fanRpm} =   evaluate  (${supplyRpm} + ${exhaustRpm}) / ${2}
+    log  ${fanRpm}
+    [Return]  ${fanRpm}
