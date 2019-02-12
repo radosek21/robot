@@ -25,7 +25,7 @@ futuraInputRegisters = {
 'fut_filter_wear_level': {'regNr': 40, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #hodnota zanesení filtrů 0-100%
 'fut_power_consumption': {'regNr': 41, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #aktuální příkon jednotky
 'fut_heat_recovering': {'regNr': 42, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #aktuální hodnota zpětně získávaného tepla
-'fut_heating_power': {'regNr': 43, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #výkon topení dohřevu
+'fut_heating_power': {'regNr': 43, 'size': 1, 'format': 'UINT', 'power': '', 'min': None, 'max': ''},    #výkon topení dohřevu
 'fut_air_flow': {'regNr': 44, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #aktuální průtok vzduchu
 'fut_fan_pwm_supply': {'regNr': 45, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #výkon ventilátoru pro přívod vzduchu
 'fut_fan_pwm_exhaust': {'regNr': 46, 'size': 1, 'format': 'UINT', 'power': '', 'min': '', 'max': ''},    #výkon ventilátoru pro odtah vzduchu

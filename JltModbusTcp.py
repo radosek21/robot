@@ -2,17 +2,10 @@ from pyModbusTCP.client import ModbusClient
 from futuraMbRegisters import *
 
 
-def isNumber(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
-
 
 
 class JltModbusTcp(ModbusClient):
-    def __init__(self, host = 'localhost', port = 502):
+    def __init__(self, host='localhost', port=502):
         super(JltModbusTcp, self).__init__(host=host, port=port, auto_open=True, auto_close=True)
         self.inputRegs = futuraInputRegisters
         self.holdingRegs = futuraHoldingRegisters
@@ -27,19 +20,19 @@ class JltModbusTcp(ModbusClient):
             shift += 16
         return result
 
-    def readInput(self, regName, size=2):
+    def readInput(self, regName, size=1):
         data = self.read_input_registers(self.inputRegs[regName]['regNr'], size)
         if not data:
             raise Exception('readInputExtraLong: read error')
         return self.dataToInt(data)
 
-    def readHolding(self, regName, size=2):
+    def readHolding(self, regName, size=1):
         data = self.read_holding_registers(self.holdingRegs[regName]['regNr'], size)
         if not data:
             raise Exception('readHoldingExtraLong: read error')
         return self.dataToInt(data)
 
-    def write(self, regName, value, size=2):
+    def writeHolding(self, regName, value, size=1):
         data = [((value >> (i*16)) & 0xFFFF) for i in range(size)]
         ret = self.write_multiple_registers(self.holdingRegs[regName]['regNr'], data)
         if not ret:
@@ -49,20 +42,20 @@ class JltModbusTcp(ModbusClient):
     # *********************************************************************
     # READ FORMATED MODBUS HOLDING REGISTERS
     # *********************************************************************
-    def readFormatedHolding(self, reg):
+    def readFormatedHolding(self, regName):
         try:
-            size = int(self.holdingRegs[reg]['size'])
+            size = int(self.holdingRegs[regName]['size'])
         except ValueError:
             size = 1
 
         power = 1
-        val = self.readHolding(reg, size)
-        if isNumber( self.holdingRegs[reg]['power']):
-           power = self.holdingRegs[reg]['power'] * 1.0
+        val = self.readHolding(regName, size)
+        if self.isNumber( self.holdingRegs[regName]['power']):
+           power = self.holdingRegs[regName]['power'] * 1.0
 
-        if self.holdingRegs[reg]['format'] == 'F':
+        if self.holdingRegs[regName]['format'] == 'F':
             return round(val * 0.1, 1)
-        elif self.holdingRegs[reg]['format'] in ['IS', 'SINT']:
+        elif self.holdingRegs[regName]['format'] in ['IS', 'SINT']:
             if val & 0x8000:
                 val = val & 0x7FFF - 0xFFFF
                 val = val * -1.0
@@ -76,20 +69,20 @@ class JltModbusTcp(ModbusClient):
     # *********************************************************************
     # READ FORMATED MODBUS INPUT REGISTERS
     # *********************************************************************
-    def readFormatedInput(self, reg):
+    def readFormatedInput(self, regName):
         try:
-            size = int(self.inputRegs[reg]['size'])
+            size = int(self.inputRegs[regName]['size'])
         except ValueError:
             size = 1
 
         power = 1
-        val = self.readInput(reg, size)
-        if isNumber( self.inputRegs[reg]['power']):
-           power = self.inputRegs[reg]['power'] * 1.0
+        val = self.readInput(regName, size)
+        if self.isNumber( self.inputRegs[regName]['power']):
+           power = self.inputRegs[regName]['power'] * 1.0
 
-        if self.inputRegs[reg]['format'] == 'F':
+        if self.inputRegs[regName]['format'] == 'F':
             return round(val * 0.1, 1)
-        elif self.inputRegs[reg]['format'] in ['IS', 'SINT']:
+        elif self.inputRegs[regName]['format'] in ['IS', 'SINT']:
             if val & 0x8000:
                 val = val & 0x7FFF - 0xFFFF
                 val = val * -1.0
@@ -103,27 +96,27 @@ class JltModbusTcp(ModbusClient):
     # *********************************************************************
     # READ FORMATED MODBUS HOLDING REGISTERS
     # *********************************************************************
-    def writeFormatedHolding(self, reg, value):
+    def writeFormatedHolding(self, regName, value):
         try:
-            size = int(self.holdingRegs[reg]['size'])
+            size = int(self.holdingRegs[regName]['size'])
         except ValueError:
             size = 1
 
         power = 1
-        if isNumber( self.holdingRegs[reg]['power']):
-           power = self.holdingRegs[reg]['power'] * 1.0
+        if self.isNumber( self.holdingRegs[regName]['power']):
+           power = self.holdingRegs[regName]['power'] * 1.0
 
-        value = float(value) if isNumber(value) else eval(value)
+        value = float(value) if self.isNumber(value) else eval(value)
         value *= power
         value = round(value)
 
-        if self.holdingRegs[reg]['format'] in ['IS', 'SINT']:
+        if self.holdingRegs[regName]['format'] in ['IS', 'SINT']:
             if value < 0:
                 value = (0xFFFF - abs(value)) | 0x8000
             else:
                 value = value & 0x7FFF
         print(value, size)
-        self.write(reg, value, size)
+        self.write(regName, value, size)
 
 
     # *********************************************************************
