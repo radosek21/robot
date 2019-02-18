@@ -1,6 +1,6 @@
 *** Settings ***
 Library       JltModbusTcp.py
-Library       PyKeywords.py
+Library       auxiliaries.py
 
 
 *** Keywords ***

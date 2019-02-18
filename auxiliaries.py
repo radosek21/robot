@@ -7,11 +7,7 @@ import time
     Following class defines low level methods to specify the Robot Framework 
     supporting keywords.  
 '''
-class PyKeywords(object):
-    def __init__(self):
-        self._mbClient = None
-
-
+class Auxiliaries(object):
     def is_equal_to(self, a, b):
         if float(a) != float(b):
             raise AssertionError('%s != %s' % (a, b))
@@ -28,15 +24,15 @@ class PyKeywords(object):
         if float(a) <= float(b):
             raise AssertionError('%s <= %s' % (a, b))
 
-    def is_between(self, value, minVal, maxVal):
-        result = True if float(minVal) <= float(value) <= float(maxVal) else False
+    def is_between(self, v, minVal, maxVal):
+        result = True if float(minVal) <= float(v) <= float(maxVal) else False
         if not result:
-            raise AssertionError('%s not in range [%s, %s]' % (value, minVal, maxVal))
+            raise AssertionError('%s not in range [%s, %s]' % (v, minVal, maxVal))
 
     def wait_for(self, t):
         time.sleep(float(t))
 
-    def values_differs_by(self, value1, value2, diff):
-        result = True if abs(float(value1) - float(value2)) <= float(diff) else False
+    def values_differs_by(self, a, b, diff):
+        result = True if abs(float(a) - float(b)) <= float(diff) else False
         if not result:
-            raise AssertionError('Values %s and %s does not differ by %s' % (value1, value2, diff))
+            raise AssertionError('Values %s and %s does not differ by %s' % (a, b, diff))
