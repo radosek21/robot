@@ -12,6 +12,9 @@ Library       auxiliaries.py
 wait for ${time} seconds
     wait for   ${time}
 
+poèkej ${time} sekund
+    wait for   ${time}
+
 fan pwm ${value1} is ${mul} times greater than ${value2}
     ${pwm1} =   readFormatedHolding  fut_fan_pwm_${value1}
     ${pwm2} =   readFormatedHolding  fut_fan_pwm_${value2}
@@ -65,6 +68,10 @@ ventilation is set to level ${level}
     # Wait a moment till the engines rpmd is stabilized
     wait for   10.0
 
+ventilace je nastavena na úroveò ${úroveò}
+    writeFormatedHolding  func_ventilation  ${úroveò}
+    # Wait a moment till the engines rpmd is stabilized
+    wait for   10.0
 
 start overpreasure for ${seconds} seconds
     writeFormatedHolding   func_overpressure_tm   ${seconds}
@@ -83,7 +90,19 @@ boost function has been started for ${seconds} seconds
     # Wait a moment till the engines RPM is stabilized
     wait for  15.0
 
+funkce boost je aktivována na ${seconds} sekund
+    writeFormatedHolding   func_boost_tm   ${seconds}
+    # Wait a moment till the engines RPM is stabilized
+    wait for  15.0
+
 fan speed is between ${low} and ${high} rpm
+    ${supplyRpm} =  readFormatedHolding  fut_fan_rpm_supply
+    ${exhaustRpm} =  readFormatedHolding  fut_fan_rpm_exhaust
+    ${currentRrmp} =   evaluate  (${supplyRpm} + ${exhaustRpm}) / ${2}
+    log  ${currentRrmp}
+    is between    ${currentRrmp}  ${low}  ${high}
+
+rychlost ventilátorù by mìla být mezi ${low} a ${high} rpm
     ${supplyRpm} =  readFormatedHolding  fut_fan_rpm_supply
     ${exhaustRpm} =  readFormatedHolding  fut_fan_rpm_exhaust
     ${currentRrmp} =   evaluate  (${supplyRpm} + ${exhaustRpm}) / ${2}
