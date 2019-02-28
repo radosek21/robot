@@ -1,6 +1,7 @@
 *** Settings ***
-Library       JltModbusTcp.py
-Library       auxiliaries.py
+Library       futuraMbRegisters.py
+Library       JltModbusTcp.py        192.168.23.216      502
+Library       Auxiliaries.py
 
 
 *** Keywords ***
@@ -12,7 +13,7 @@ Library       auxiliaries.py
 wait for ${time} seconds
     wait for   ${time}
 
-poËkej ${time} sekund
+poƒçkej ${time} sekund
     wait for   ${time}
 
 fan pwm ${value1} is ${mul} times greater than ${value2}
@@ -38,7 +39,7 @@ indoor temperature is bellow setpoint by ${offset} degree
 heating function is ${enable}
     Run Keyword If    '${enable}' == 'enabled'      writeFormatedHolding  cfg_heating_enable  1
     Run Keyword If    '${enable}' == 'disabled'     writeFormatedHolding  cfg_heating_enable  0
-    wait for   30.0
+    wait for 30.0 seconds
 
 current heating power
     ${heatingPower} =  readFormatedInput  fut_heating_power
@@ -66,10 +67,10 @@ exhaust fan rpm
 ventilation is set to level ${level}
     writeFormatedHolding  func_ventilation  ${level}
     # Wait a moment till the engines rpmd is stabilized
-    wait for   10.0
+    wait for 10.0 seconds
 
-ventilace je nastavena na ˙roveÚ ${˙roveÚ}
-    writeFormatedHolding  func_ventilation  ${˙roveÚ}
+ventilace je nastavena na √∫rove≈à ${√∫rove≈à}
+    writeFormatedHolding  func_ventilation  ${√∫rove≈à}
     # Wait a moment till the engines rpmd is stabilized
     wait for   10.0
 
@@ -90,7 +91,7 @@ boost function has been started for ${seconds} seconds
     # Wait a moment till the engines RPM is stabilized
     wait for  15.0
 
-funkce boost je aktivov·na na ${seconds} sekund
+funkce boost je aktivov√°na na ${seconds} sekund
     writeFormatedHolding   func_boost_tm   ${seconds}
     # Wait a moment till the engines RPM is stabilized
     wait for  15.0
@@ -102,7 +103,7 @@ fan speed is between ${low} and ${high} rpm
     log  ${currentRrmp}
     is between    ${currentRrmp}  ${low}  ${high}
 
-rychlost ventil·tor˘ by mÏla b˝t mezi ${low} a ${high} rpm
+rychlost ventil√°tor≈Ø by mƒõla b√Ωt mezi ${low} a ${high} rpm
     ${supplyRpm} =  readFormatedHolding  fut_fan_rpm_supply
     ${exhaustRpm} =  readFormatedHolding  fut_fan_rpm_exhaust
     ${currentRrmp} =   evaluate  (${supplyRpm} + ${exhaustRpm}) / ${2}

@@ -3,7 +3,6 @@ from futuraMbRegisters import *
 
 
 
-
 class JltModbusTcp(ModbusClient):
     def __init__(self, host='localhost', port=502):
         super(JltModbusTcp, self).__init__(host=host, port=port, auto_open=True, auto_close=True)
@@ -12,6 +11,13 @@ class JltModbusTcp(ModbusClient):
     # *********************************************************************
     # LOW LEVEL FUNCTIONS DEFINITIONS
     # *********************************************************************
+    def isNumber(self, s):
+        try:
+            float(s)
+            return True
+        except ValueError:
+            return False
+
     def dataToInt(self, data):
         shift = 0
         result = 0
@@ -36,7 +42,11 @@ class JltModbusTcp(ModbusClient):
         data = [((value >> (i*16)) & 0xFFFF) for i in range(size)]
         ret = self.write_multiple_registers(self.holdingRegs[regName]['regNr'], data)
         if not ret:
-            raise Exception('writeHoldingExtraLong: write error')
+            raise Exception('writeHolding[{}]: write error'.format(self.host()))
+
+    # *********************************************************************
+    # HIGHER LEVEL FUNCTIONS DEFINITIONS
+    # *********************************************************************
 
 
     # *********************************************************************
@@ -50,8 +60,11 @@ class JltModbusTcp(ModbusClient):
 
         power = 1
         val = self.readHolding(regName, size)
-        if self.isNumber( self.holdingRegs[regName]['power']):
-           power = self.holdingRegs[regName]['power'] * 1.0
+        power = self.holdingRegs[regName]['power']
+        if power is None:
+            power = 1.0
+        else:
+            power *= 1.0
 
         if self.holdingRegs[regName]['format'] == 'F':
             return round(val * 0.1, 1)
@@ -77,8 +90,11 @@ class JltModbusTcp(ModbusClient):
 
         power = 1
         val = self.readInput(regName, size)
-        if self.isNumber( self.inputRegs[regName]['power']):
-           power = self.inputRegs[regName]['power'] * 1.0
+        power = self.inputRegs[regName]['power']
+        if power is None:
+            power = 1.0
+        else:
+            power *= 1.0
 
         if self.inputRegs[regName]['format'] == 'F':
             return round(val * 0.1, 1)
@@ -102,9 +118,11 @@ class JltModbusTcp(ModbusClient):
         except ValueError:
             size = 1
 
-        power = 1
-        if self.isNumber( self.holdingRegs[regName]['power']):
-           power = self.holdingRegs[regName]['power'] * 1.0
+        power = self.holdingRegs[regName]['power']
+        if power is None:
+            power = 1.0
+        else:
+            power *= 1.0
 
         value = float(value) if self.isNumber(value) else eval(value)
         value *= power
@@ -115,13 +133,13 @@ class JltModbusTcp(ModbusClient):
                 value = (0xFFFF - abs(value)) | 0x8000
             else:
                 value = value & 0x7FFF
-        print(value, size)
-        self.write(regName, value, size)
+        self.writeHolding(regName, value, size)
 
 
     # *********************************************************************
     # HIGHT LEVEL FUNC
     # *********************************************************************
+
     def mac_address(self):
         #print('{:012X}'.format(mac))
         return self.readInput('mac_address0', 3)
@@ -148,28 +166,28 @@ class JltModbusTcp(ModbusClient):
         return self.readInput('sys_warning0', 2)
 
     def temp_ambient(self):
-        return round(self.readInput('fut_temp_ambient', 1) * 0.1, 1)
+        return round(self.readInput('fut_t_amb', 1) * 0.1, 1)
 
     def temp_fresh(self):
-        return round(self.readInput('fut_temp_fresh', 1) * 0.1, 1)
+        return round(self.readInput('fut_t_fre', 1) * 0.1, 1)
 
     def temp_indoor(self):
-        return round(self.readInput('fut_temp_indoor', 1) * 0.1, 1)
+        return round(self.readInput('fut_t_ind', 1) * 0.1, 1)
 
     def temp_waste(self):
-        return round(self.readInput('fut_temp_waste', 1) * 0.1, 1)
+        return round(self.readInput('fut_t_was', 1) * 0.1, 1)
 
     def humi_ambient(self):
-        return self.readInput('fut_humi_ambient', 1) * 0.1
+        return self.readInput('fut_rh_amb', 1) * 0.1
 
     def humi_fresh(self):
-        return self.readInput('fut_humi_fresh', 1) * 0.1
+        return self.readInput('fut_rh_fre', 1) * 0.1
 
     def humi_indoor(self):
-        return self.readInput('fut_humi_indoor', 1) * 0.1
+        return self.readInput('fut_rh_ind', 1) * 0.1
 
     def humi_waste(self):
-        return self.readInput('fut_fut_humi_waste', 1) * 0.1
+        return self.readInput('fut_rh_was', 1) * 0.1
 
     def fan_supply_rpm(self):
         return self.readInput('fut_fan_rpm_supply', 1)
@@ -181,5 +199,4 @@ class JltModbusTcp(ModbusClient):
         return self.readInput('fut_heating_power', 1)
 
     def temp_set(self):
-        print(self.readHolding('cfg_temp_set', 1))
         return round(self.readHolding('cfg_temp_set', 1) * 0.1, 1)

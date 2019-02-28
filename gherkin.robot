@@ -1,12 +1,13 @@
 *** Settings ***
 Documentation     Example test case using the gherkin syntax.
-Resource          Futura.robot
+Resource          Keywords.robot
 
 
 
 *** Test Cases ***
 Check bypass
     Given ventilation is set to level 2
+    And indoor temperature is bellow setpoint by 5 degree
     When bypass function is enabled
     Then temperature ambient and fresh differs by up to 2.0 degree
     And bypass function is disabled
