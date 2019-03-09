@@ -1,5 +1,4 @@
 *** Settings ***
-Library       futuraMbRegisters.py
 Library       JltModbusTcp.py        192.168.23.216      502
 Library       Auxiliaries.py
 

@@ -42,7 +42,7 @@ class JltModbusTcp(ModbusClient):
         data = [((value >> (i*16)) & 0xFFFF) for i in range(size)]
         ret = self.write_multiple_registers(self.holdingRegs[regName]['regNr'], data)
         if not ret:
-            raise Exception('writeHolding[{}]: write error'.format(self.host()))
+            raise Exception('writeHoldingExtraLong: write error')
 
     # *********************************************************************
     # HIGHER LEVEL FUNCTIONS DEFINITIONS
