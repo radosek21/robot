@@ -6,22 +6,22 @@ Resource          Keywords.robot
 
 *** Test Cases ***
 Check bypass
-    Given ventilation is set to level 2
+    Wait for 0.5 seconds
     
 
 Check boost
-    Given ventilation is set to level 1
+    Wait for 0.5 seconds
     
 
 Check circulation
-    Given ventilation is set to level 2
+    Wait for 0.5 seconds
     
 
 Check overpreasure
-    Given ventilation is set to level 5
+    Wait for 0.5 seconds
     
 
 Check heating power
-    Given ventilation is set to level 1
+    Wait for 0.5 seconds
     
 
